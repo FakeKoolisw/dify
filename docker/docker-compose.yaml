@@ -322,6 +322,14 @@ services:
   web:
     image: langgenius/dify-web:0.6.10
     restart: always
+    networks:
+      - dokploy-network
+    labels:
+      - traefik.enable=true
+      - traefik.http.routers.directus-2.rule=Host(`dify.tsun1031.xyz`)
+      - traefik.http.routers.directus-2.entrypoints=websecure
+      - traefik.http.routers.directus-2.tls.certResolver=letsencrypt
+      - traefik.http.services.directus-2.loadbalancer.server.port=3001
     environment:
       # The base URL of console application api server, refers to the Console base URL of WEB service if console domain is
       # different from api or web app domain.
@@ -334,8 +342,8 @@ services:
       # The DSN for Sentry error reporting. If not set, Sentry error reporting will be disabled.
       SENTRY_DSN: ''
     # uncomment to expose dify-web port to host
-    # ports:
-    #   - "3000:3000"
+    ports:
+      - "3001:3000"
 
   # The postgres database.
   db:
@@ -474,28 +482,20 @@ services:
 
   # The nginx reverse proxy.
   # used for reverse proxying the API service and Web service.
-  nginx:
-    image: nginx:latest
-    restart: always
-    networks:
-      - dokploy-network
-    labels:
-      - traefik.enable=true
-      - traefik.http.routers.directus-2.rule=Host(`dify.tsun1031.xyz`)
-      - traefik.http.routers.directus-2.entrypoints=websecure
-      - traefik.http.routers.directus-2.tls.certResolver=letsencrypt
-      - traefik.http.services.directus-2.loadbalancer.server.port=3001
-    volumes:
-      - ./nginx/nginx.conf:/etc/nginx/nginx.conf
-      - ./nginx/proxy.conf:/etc/nginx/proxy.conf
-      - ./nginx/conf.d:/etc/nginx/conf.d
-      #- ./nginx/ssl:/etc/ssl
-    depends_on:
-      - api
-      - web
-    ports:
-      - "3001:80"
-      #- "443:443"
+  # nginx:
+  #   image: nginx:latest
+  #   restart: always
+  #   volumes:
+  #     - ./nginx/nginx.conf:/etc/nginx/nginx.conf
+  #     - ./nginx/proxy.conf:/etc/nginx/proxy.conf
+  #     - ./nginx/conf.d:/etc/nginx/conf.d
+  #     #- ./nginx/ssl:/etc/ssl
+  #   depends_on:
+  #     - api
+  #     - web
+  #   ports:
+  #     - "80:80"
+  #     #- "443:443"
 networks:
   # create a network between sandbox, api and ssrf_proxy, and can not access outside.
   ssrf_proxy_network:
