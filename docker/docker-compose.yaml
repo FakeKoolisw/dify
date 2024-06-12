@@ -326,10 +326,10 @@ services:
       - dokploy-network
     labels:
       - traefik.enable=true
-      - traefik.http.routers.directus-2.rule=Host(`dify.tsun1031.xyz`)
-      - traefik.http.routers.directus-2.entrypoints=websecure
-      - traefik.http.routers.directus-2.tls.certResolver=letsencrypt
-      - traefik.http.services.directus-2.loadbalancer.server.port=3001
+      - traefik.http.routers.dify.rule=Host(`dify.tsun1031.xyz`)
+      - traefik.http.routers.dify.entrypoints=websecure
+      - traefik.http.routers.dify.tls.certResolver=letsencrypt
+      - traefik.http.services.dify.loadbalancer.server.port=3001
     environment:
       # The base URL of console application api server, refers to the Console base URL of WEB service if console domain is
       # different from api or web app domain.
