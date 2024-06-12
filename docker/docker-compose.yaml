@@ -477,6 +477,14 @@ services:
   nginx:
     image: nginx:latest
     restart: always
+    networks:
+      - dokploy-network
+    labels:
+      - traefik.enable=true
+      - traefik.http.routers.directus-2.rule=Host(`dify.tsun1031.xyz`)
+      - traefik.http.routers.directus-2.entrypoints=websecure
+      - traefik.http.routers.directus-2.tls.certResolver=letsencrypt
+      - traefik.http.services.directus-2.loadbalancer.server.port=3001
     volumes:
       - ./nginx/nginx.conf:/etc/nginx/nginx.conf
       - ./nginx/proxy.conf:/etc/nginx/proxy.conf
@@ -493,3 +501,5 @@ networks:
   ssrf_proxy_network:
     driver: bridge
     internal: true
+  dokploy-network:
+    external: true
